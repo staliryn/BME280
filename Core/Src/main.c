@@ -94,7 +94,10 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  if(!HAL_GPIO_ReadPin(GPIOC, B1_Pin)){
+		  HAL_GPIO_TogglePin(GPIOA, LD2_Pin);
+		  HAL_Delay(150);
+	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
