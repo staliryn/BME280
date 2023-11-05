@@ -34,34 +34,40 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := BMP280
+BUILD_ARTIFACT_NAME := BME280
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-BMP280.elf \
+BME280.elf \
 
 MAP_FILES += \
-BMP280.map \
+BME280.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-BMP280.list \
+BME280.list \
+
+OBJCOPY_HEX += \
+BME280.hex \
+
+OBJCOPY_BIN += \
+BME280.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: BMP280.elf secondary-outputs
+main-build: BME280.elf secondary-outputs
 
 # Tool invocations
-BMP280.elf BMP280.map: $(OBJS) $(USER_OBJS) C:\Users\Fellipe\Documents\STM32\BMP280\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BMP280.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Fellipe\Documents\STM32\BMP280\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BMP280.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+BME280.elf BME280.map: $(OBJS) $(USER_OBJS) C:\Users\Fellipe\Documents\STM32\BMP280\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "BME280.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Fellipe\Documents\STM32\BMP280\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BME280.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,17 +76,27 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-BMP280.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "BMP280.list"
+BME280.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "BME280.list"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+BME280.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "BME280.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
+BME280.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "BME280.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) BMP280.elf BMP280.list BMP280.map default.size.stdout
+	-$(RM) BME280.bin BME280.elf BME280.hex BME280.list BME280.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
