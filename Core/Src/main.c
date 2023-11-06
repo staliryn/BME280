@@ -170,7 +170,7 @@ int main(void)
   while (1)
   {
 	  temp = bme280_temp(&hi2c1,0xEC);
-	  	  HAL_Delay(300);
+	  	  HAL_Delay(150);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
