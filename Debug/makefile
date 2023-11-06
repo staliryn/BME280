@@ -66,8 +66,8 @@ all: main-build
 main-build: BME280.elf secondary-outputs
 
 # Tool invocations
-BME280.elf BME280.map: $(OBJS) $(USER_OBJS) C:\Users\Fellipe\Documents\STM32\BMP280\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BME280.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Fellipe\Documents\STM32\BMP280\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BME280.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+BME280.elf BME280.map: $(OBJS) $(USER_OBJS) C:\Users\Fellipe\Documents\STM32\BME280\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "BME280.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\Fellipe\Documents\STM32\BME280\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BME280.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
