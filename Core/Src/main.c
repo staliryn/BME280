@@ -76,16 +76,16 @@ float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAdress){
 		  sample_temperature_data[] = {0xFA},
 		  temperature_stored_sample[3];
 
-	HAL_I2C_Master_Transmit(hi2c,devAdress,&sample_temperature_data,1,100);
+	HAL_I2C_Master_Transmit(hi2c,devAdress,sample_temperature_data,1,100);
 	HAL_I2C_Master_Receive(hi2c,devAdress,&temperature_stored_sample,3,100);
 
-	HAL_I2C_Master_Transmit(hi2c, devAdress, &temperature_data1, 1, 100);
+	HAL_I2C_Master_Transmit(hi2c, devAdress, temperature_data1, 1, 100);
 	HAL_I2C_Master_Receive(hi2c, devAdress, &temperature_stored1, 2, 100);
 
-	HAL_I2C_Master_Transmit(hi2c, devAdress, &temperature_data2, 1, 100);
+	HAL_I2C_Master_Transmit(hi2c, devAdress, temperature_data2, 1, 100);
 	HAL_I2C_Master_Receive(hi2c, devAdress, &temperature_stored2, 2, 100);
 
-	HAL_I2C_Master_Transmit(hi2c, devAdress, &temperature_data3, 1, 100);
+	HAL_I2C_Master_Transmit(hi2c, devAdress, temperature_data3, 1, 100);
 	HAL_I2C_Master_Receive(hi2c, devAdress, &temperature_stored3, 2, 100);
 
 

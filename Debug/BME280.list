@@ -789,7 +789,7 @@ float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAdress){
  8000a26:	743b      	strb	r3, [r7, #16]
 		  temperature_stored_sample[3];
 
-	HAL_I2C_Master_Transmit(hi2c,devAdress,&sample_temperature_data,1,100);
+	HAL_I2C_Master_Transmit(hi2c,devAdress,sample_temperature_data,1,100);
  8000a28:	f107 0210 	add.w	r2, r7, #16
  8000a2c:	8879      	ldrh	r1, [r7, #2]
  8000a2e:	2364      	movs	r3, #100	; 0x64
@@ -806,7 +806,7 @@ float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAdress){
  8000a46:	6878      	ldr	r0, [r7, #4]
  8000a48:	f000 ffda 	bl	8001a00 <HAL_I2C_Master_Receive>
 
-	HAL_I2C_Master_Transmit(hi2c, devAdress, &temperature_data1, 1, 100);
+	HAL_I2C_Master_Transmit(hi2c, devAdress, temperature_data1, 1, 100);
  8000a4c:	f107 0228 	add.w	r2, r7, #40	; 0x28
  8000a50:	8879      	ldrh	r1, [r7, #2]
  8000a52:	2364      	movs	r3, #100	; 0x64
@@ -823,7 +823,7 @@ float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAdress){
  8000a6a:	6878      	ldr	r0, [r7, #4]
  8000a6c:	f000 ffc8 	bl	8001a00 <HAL_I2C_Master_Receive>
 
-	HAL_I2C_Master_Transmit(hi2c, devAdress, &temperature_data2, 1, 100);
+	HAL_I2C_Master_Transmit(hi2c, devAdress, temperature_data2, 1, 100);
  8000a70:	f107 0224 	add.w	r2, r7, #36	; 0x24
  8000a74:	8879      	ldrh	r1, [r7, #2]
  8000a76:	2364      	movs	r3, #100	; 0x64
@@ -840,7 +840,7 @@ float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAdress){
  8000a8e:	6878      	ldr	r0, [r7, #4]
  8000a90:	f000 ffb6 	bl	8001a00 <HAL_I2C_Master_Receive>
 
-	HAL_I2C_Master_Transmit(hi2c, devAdress, &temperature_data3, 1, 100);
+	HAL_I2C_Master_Transmit(hi2c, devAdress, temperature_data3, 1, 100);
  8000a94:	f107 0220 	add.w	r2, r7, #32
  8000a98:	8879      	ldrh	r1, [r7, #2]
  8000a9a:	2364      	movs	r3, #100	; 0x64
