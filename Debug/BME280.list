@@ -773,21 +773,21 @@ double bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 	uint8_t temperature_data1[] = {0x88,0x89},
  8000a12:	f648 1388 	movw	r3, #35208	; 0x8988
  8000a16:	853b      	strh	r3, [r7, #40]	; 0x28
-		  temperature_data2[] = {0x8A,0x8B},
+			temperature_data2[] = {0x8A,0x8B},
  8000a18:	f648 338a 	movw	r3, #35722	; 0x8b8a
  8000a1c:	84bb      	strh	r3, [r7, #36]	; 0x24
-		  temperature_data3[] = {0x8C,0x8D},
+			temperature_data3[] = {0x8C,0x8D},
  8000a1e:	f648 538c 	movw	r3, #36236	; 0x8d8c
  8000a22:	843b      	strh	r3, [r7, #32]
 
-		  temperature_stored1[2],
-		  temperature_stored2[2],
-		  temperature_stored3[2],
+			temperature_stored1[2],
+			temperature_stored2[2],
+			temperature_stored3[2],
 
-		  sample_temperature_data[] = {0xFA},
+			sample_temperature_data[] = {0xFA},
  8000a24:	23fa      	movs	r3, #250	; 0xfa
  8000a26:	743b      	strb	r3, [r7, #16]
-		  temperature_stored_sample[3];
+			temperature_stored_sample[3];
 
 	HAL_I2C_Master_Transmit(hi2c,devAddress,sample_temperature_data,1,100);
  8000a28:	f107 0210 	add.w	r2, r7, #16
@@ -2127,15 +2127,19 @@ int main(void)
  8001602:	f000 f8ad 	bl	8001760 <MX_I2C1_Init>
   /* USER CODE BEGIN 2 */
 
-	  uint8_t ctrl_measF4[] = {0xF4,0b00100111};
+	  uint8_t ctrl_measF4[] = {0xF4,0b00100111}; // Sets F4(ctrl_meas) bits configuration
  8001606:	f242 73f4 	movw	r3, #10228	; 0x27f4
  800160a:	80bb      	strh	r3, [r7, #4]
-	  uint8_t ctrl_humF2[] = {0xF2,0b00000001};
+	  	  	  	  	  	  	  	  	  	  	  	 // Pressure and temperature oversampling: x1
+	  	  	  	  	  	  	  	  	  	  	  	 // Normal mode
+
+	  uint8_t ctrl_humF2[] = {0xF2,0b00000001};	 // Sets F2(ctrl_hum) bits configuration
  800160c:	f44f 73f9 	mov.w	r3, #498	; 0x1f2
  8001610:	803b      	strh	r3, [r7, #0]
+	  	  	  	  	  	  	  	  	  	  	  	 // Humidity oversampling: x1
 
 
-	  if(HAL_I2C_IsDeviceReady(&hi2c1, 0xEC, 2, 30) == HAL_OK){
+	  if(HAL_I2C_IsDeviceReady(&hi2c1, 0xEC, 2, 30) == HAL_OK){ //If BME device returns us ACK signal,LED is on.
  8001612:	231e      	movs	r3, #30
  8001614:	2202      	movs	r2, #2
  8001616:	21ec      	movs	r1, #236	; 0xec
@@ -2154,7 +2158,7 @@ int main(void)
  8001632:	f000 fa7d 	bl	8001b30 <HAL_Delay>
 	  }
 
-	  HAL_I2C_Master_Transmit(&hi2c1, 0xEC, ctrl_measF4, 2, 100);
+	  HAL_I2C_Master_Transmit(&hi2c1, 0xEC, ctrl_measF4, 2, 100);	//Write the F4(ctrl_meas) configuration
  8001636:	1d3a      	adds	r2, r7, #4
  8001638:	2364      	movs	r3, #100	; 0x64
  800163a:	9300      	str	r3, [sp, #0]
@@ -2162,7 +2166,7 @@ int main(void)
  800163e:	21ec      	movs	r1, #236	; 0xec
  8001640:	481a      	ldr	r0, [pc, #104]	; (80016ac <main+0xbc>)
  8001642:	f000 fdd1 	bl	80021e8 <HAL_I2C_Master_Transmit>
-	  HAL_I2C_Master_Transmit(&hi2c1, 0xEC, ctrl_humF2, 2, 100);
+	  HAL_I2C_Master_Transmit(&hi2c1, 0xEC, ctrl_humF2, 2, 100);	//Write the F2(ctrl_meas) configuration
  8001646:	463a      	mov	r2, r7
  8001648:	2364      	movs	r3, #100	; 0x64
  800164a:	9300      	str	r3, [sp, #0]
@@ -2175,7 +2179,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  temp = bme280_temp(&hi2c1,0xEC);
+	  temp = bme280_temp(&hi2c1,0xEC); //bme280_temp(your_i2c_channel,devices_address). This function returns the current temperature.
  8001656:	21ec      	movs	r1, #236	; 0xec
  8001658:	4814      	ldr	r0, [pc, #80]	; (80016ac <main+0xbc>)
  800165a:	f7ff f9d3 	bl	8000a04 <bme280_temp>
@@ -2186,7 +2190,7 @@ int main(void)
  800166a:	4603      	mov	r3, r0
  800166c:	4a10      	ldr	r2, [pc, #64]	; (80016b0 <main+0xc0>)
  800166e:	6013      	str	r3, [r2, #0]
-	  press = bme280_press(&hi2c1, 0xEC);
+	  press = bme280_press(&hi2c1, 0xEC); //bme280_press(your_i2c_channel,devices_address). This function returns the current pressure.
  8001670:	21ec      	movs	r1, #236	; 0xec
  8001672:	480e      	ldr	r0, [pc, #56]	; (80016ac <main+0xbc>)
  8001674:	f7ff fb18 	bl	8000ca8 <bme280_press>
@@ -2197,7 +2201,7 @@ int main(void)
  8001684:	4603      	mov	r3, r0
  8001686:	4a0b      	ldr	r2, [pc, #44]	; (80016b4 <main+0xc4>)
  8001688:	6013      	str	r3, [r2, #0]
-	  hum = bme280_hum(&hi2c1, 0xEC);
+	  hum = bme280_hum(&hi2c1, 0xEC); //bme280_hum(your_i2c_channel,devices_address). This function returns the current humidity.
  800168a:	21ec      	movs	r1, #236	; 0xec
  800168c:	4807      	ldr	r0, [pc, #28]	; (80016ac <main+0xbc>)
  800168e:	f7ff fe0f 	bl	80012b0 <bme280_hum>
@@ -2208,10 +2212,10 @@ int main(void)
  800169e:	4603      	mov	r3, r0
  80016a0:	4a05      	ldr	r2, [pc, #20]	; (80016b8 <main+0xc8>)
  80016a2:	6013      	str	r3, [r2, #0]
-	  	  HAL_Delay(150);
+	  HAL_Delay(150);
  80016a4:	2096      	movs	r0, #150	; 0x96
  80016a6:	f000 fa43 	bl	8001b30 <HAL_Delay>
-	  temp = bme280_temp(&hi2c1,0xEC);
+	  temp = bme280_temp(&hi2c1,0xEC); //bme280_temp(your_i2c_channel,devices_address). This function returns the current temperature.
  80016aa:	e7d4      	b.n	8001656 <main+0x66>
  80016ac:	20000038 	.word	0x20000038
  80016b0:	2000008c 	.word	0x2000008c
