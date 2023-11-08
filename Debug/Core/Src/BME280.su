@@ -1,1 +1,2 @@
-../Core/Src/BME280.c:10:7:bme280_temp	112	static
+../Core/Src/BME280.c:12:7:bme280_temp	112	static
+../Core/Src/BME280.c:72:7:bme280_press	176	static

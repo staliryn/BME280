@@ -1,1 +1,2 @@
-BME280.c:10:7:bme280_temp	1
+BME280.c:12:7:bme280_temp	1
+BME280.c:72:7:bme280_press	1

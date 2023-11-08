@@ -43,7 +43,8 @@
 I2C_HandleTypeDef hi2c1;
 
 /* USER CODE BEGIN PV */
-
+float temp;
+float press;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,15 +94,17 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
-	  uint8_t bme280F4config[] = {0xF4,0b00100011};
-	  float temp;
+	  uint8_t ctrl_measF4[] = {0xF4,0b00100111};
+	  uint8_t ctrl_humF2[] = {0xF2,0b00000001};
+
 
 	  if(HAL_I2C_IsDeviceReady(&hi2c1, 0xEC, 2, 30) == HAL_OK){
 		  HAL_GPIO_WritePin(GPIOA, LD2_Pin, 1);
 		  HAL_Delay(100);
 	  }
 
-	  HAL_I2C_Master_Transmit(&hi2c1, 0xEC, bme280F4config, 2, 100);
+	  HAL_I2C_Master_Transmit(&hi2c1, 0xEC, ctrl_measF4, 2, 100);
+	  HAL_I2C_Master_Transmit(&hi2c1, 0xEC, ctrl_humF2, 2, 100);
 
 
 
@@ -112,6 +115,7 @@ int main(void)
   while (1)
   {
 	  temp = bme280_temp(&hi2c1,0xEC);
+	  press = bme280_press(&hi2c1, 0xEC);
 	  	  HAL_Delay(150);
     /* USER CODE END WHILE */
 

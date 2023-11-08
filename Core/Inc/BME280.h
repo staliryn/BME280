@@ -10,6 +10,7 @@
 
 #include "main.h"
 
-float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAdress);
+float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAddress);
+float bme280_press(I2C_HandleTypeDef *hi2c, uint16_t devAddress);
 
 #endif /* INC_BME280_H_ */
