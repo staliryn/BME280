@@ -12,5 +12,6 @@
 
 float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAddress);
 float bme280_press(I2C_HandleTypeDef *hi2c, uint16_t devAddress);
+float bme280_hum(I2C_HandleTypeDef *hi2c, uint16_t devAddress);
 
 #endif /* INC_BME280_H_ */

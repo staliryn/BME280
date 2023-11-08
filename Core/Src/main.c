@@ -45,6 +45,7 @@ I2C_HandleTypeDef hi2c1;
 /* USER CODE BEGIN PV */
 float temp;
 float press;
+float hum;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -116,6 +117,7 @@ int main(void)
   {
 	  temp = bme280_temp(&hi2c1,0xEC);
 	  press = bme280_press(&hi2c1, 0xEC);
+	  hum = bme280_hum(&hi2c1, 0xEC);
 	  	  HAL_Delay(150);
     /* USER CODE END WHILE */
 

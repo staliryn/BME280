@@ -95,7 +95,7 @@ float bme280_press(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 			stored_pressure_address_read9[2],
 
 			sample_measurement_values[] = {0xF7,0xF8,0xF9},
-			stored_sample_measurement_values[8];
+			stored_sample_measurement_values[3];
 
 
 	uint16_t dig_p1;
@@ -184,5 +184,77 @@ float bme280_press(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 	p = p + (var1 + var2 + ((double)dig_p7)) / 16.0;
 	p /= 100; // return hPA
 	return p;
+
+}
+
+
+
+float bme280_hum(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
+
+	float h;
+
+	int64_t adc_H;
+
+	int8_t dig_h2,
+		   dig_h4,
+		   dig_h5,
+		   dig_h6;
+
+	uint8_t	dig_h1,
+			dig_h3,
+
+			humidity_adress1[] = {0xA1},
+			humidity_adress2[] = {0xE1,0xE2},
+			humidity_adress3[] = {0xE3},
+			humidity_adress4[] = {0xE4,0xE5},
+			humidity_adress5[] = {0xE5,0xE6},
+			humidity_adress6[] = {0xE7},
+
+			stored_humidity_address_read1[1],
+			stored_humidity_address_read2[2],
+			stored_humidity_address_read3[1],
+			stored_humidity_address_read4[2],
+			stored_humidity_address_read5[2],
+			stored_humidity_address_read6[1],
+
+			sample_measurement_values[] = {0xFD,0xFE},
+			stored_sample_measurement_values[2];
+
+	HAL_I2C_Master_Transmit(hi2c, devAddress, humidity_adress1, 1, 100);
+	HAL_I2C_Master_Receive(hi2c, devAddress, &stored_humidity_address_read1, 1, 100);
+
+	HAL_I2C_Master_Transmit(hi2c, devAddress, humidity_adress2, 2, 100);
+	HAL_I2C_Master_Receive(hi2c, devAddress, &stored_humidity_address_read2, 2, 100);
+
+	HAL_I2C_Master_Transmit(hi2c, devAddress, humidity_adress3, 1, 100);
+	HAL_I2C_Master_Receive(hi2c, devAddress, &stored_humidity_address_read3, 1, 100);
+
+	HAL_I2C_Master_Transmit(hi2c, devAddress, humidity_adress4, 1, 100);
+	HAL_I2C_Master_Receive(hi2c, devAddress, &stored_humidity_address_read4, 2, 100);
+
+	HAL_I2C_Master_Transmit(hi2c, devAddress, humidity_adress5, 1, 100);
+	HAL_I2C_Master_Receive(hi2c, devAddress, &stored_humidity_address_read5, 2, 100);
+
+	HAL_I2C_Master_Transmit(hi2c, devAddress, humidity_adress6, 1, 100);
+	HAL_I2C_Master_Receive(hi2c, devAddress, &stored_humidity_address_read6, 1, 100);
+
+	HAL_I2C_Master_Transmit(hi2c, devAddress, sample_measurement_values, 2, 100);
+	HAL_I2C_Master_Receive(hi2c, devAddress, &stored_sample_measurement_values, 2, 100);
+
+
+
+	adc_H = ((stored_sample_measurement_values[0] <<8) + stored_sample_measurement_values[1] );
+
+	dig_h1 = stored_humidity_address_read1[0];
+	dig_h2 = (stored_humidity_address_read2[1] << 8) + stored_humidity_address_read2[0];
+	dig_h3 = stored_humidity_address_read3[0];
+	dig_h4 = (stored_humidity_address_read4[0] << 4) + stored_humidity_address_read4[1];
+	dig_h5 = (stored_humidity_address_read5[1] << 4) + stored_humidity_address_read5[0];
+	dig_h6 = stored_humidity_address_read6[0];
+
+	h = (((double)t_fine)-76800.0);
+	h = (adc_H-(((double)dig_h4)*64.0+((double)dig_h5) / 16384.0 * h))*(((double)dig_h2)/65536.0*(1.0 + ((double)dig_h6)/67108864.0*h*(1.0+((double)dig_h3)/67108864.0*h)));
+	h = h * (1.0-((double)dig_h1)*h/524288.0);
+	return h;
 
 }

@@ -1,2 +1,3 @@
 ../Core/Src/BME280.c:12:7:bme280_temp	112	static
-../Core/Src/BME280.c:72:7:bme280_press	176	static
+../Core/Src/BME280.c:72:7:bme280_press	168	static
+../Core/Src/BME280.c:192:7:bme280_hum	136	static
