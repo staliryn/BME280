@@ -2,14 +2,14 @@
  * BME280.c
  *
  *  Created on: 6 de nov de 2023
- *      Author: Fellipe
+ *      Author: Wagner Nogueira
  */
 
 #include "BME280.h"
 
 double t_fine;
 
-float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
+double bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 
 	double var1,var2;
 	float temperature;
@@ -19,15 +19,15 @@ float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 	uint16_t dig_t1;
 
 	uint8_t temperature_data1[] = {0x88,0x89},
-		  temperature_data2[] = {0x8A,0x8B},
-		  temperature_data3[] = {0x8C,0x8D},
+			temperature_data2[] = {0x8A,0x8B},
+			temperature_data3[] = {0x8C,0x8D},
 
-		  temperature_stored1[2],
-		  temperature_stored2[2],
-		  temperature_stored3[2],
+			temperature_stored1[2],
+			temperature_stored2[2],
+			temperature_stored3[2],
 
-		  sample_temperature_data[] = {0xFA},
-		  temperature_stored_sample[3];
+			sample_temperature_data[] = {0xFA},
+			temperature_stored_sample[3];
 
 	HAL_I2C_Master_Transmit(hi2c,devAddress,sample_temperature_data,1,100);
 	HAL_I2C_Master_Receive(hi2c,devAddress,&temperature_stored_sample,3,100);
@@ -69,10 +69,9 @@ float bme280_temp(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 }
 
 
-float bme280_press(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
+double bme280_press(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 
-	HAL_Delay(500);
-	double var1,var2,p;
+	double var1,var2,pressure;
 
 	uint8_t pressure_adress1[] = {0x8E,0x8F},
 			pressure_adress2[] = {0x90,0x91},
@@ -177,28 +176,28 @@ float bme280_press(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 	var2 = (var2/4.0)+(((double)dig_p4) * 65536.0);
 	var1 = (((double)dig_p3) * var1 * var1 / 524288.0 + ((double)dig_p2) * var1) / 524288.0;
 	var1 = (1.0 + var1 / 32768.0)*((double)dig_p1);
-	p = 1048576.0 - (double)adc_P;
-	p = (p - (var2 / 4096.0)) * 6250.0 / var1;
-	var1 = ((double)dig_p9) * p * p / 2147483648.0;
-	var2 = p * ((double)dig_p8) / 32768.0;
-	p = p + (var1 + var2 + ((double)dig_p7)) / 16.0;
-	p /= 100; // return hPA
-	return p;
+	pressure = 1048576.0 - (double)adc_P;
+	pressure = (pressure - (var2 / 4096.0)) * 6250.0 / var1;
+	var1 = ((double)dig_p9) * pressure * pressure / 2147483648.0;
+	var2 = pressure * ((double)dig_p8) / 32768.0;
+	pressure = pressure + (var1 + var2 + ((double)dig_p7)) / 16.0;
+	pressure /= 100; // return hPA
+	return pressure;
 
 }
 
 
 
-float bme280_hum(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
+double bme280_hum(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 
-	float h;
+	double humidity;
 
 	int64_t adc_H;
 
-	int8_t dig_h2,
-		   dig_h4,
-		   dig_h5,
-		   dig_h6;
+	 int8_t dig_h2,
+		    dig_h4,
+		    dig_h5,
+  		    dig_h6;
 
 	uint8_t	dig_h1,
 			dig_h3,
@@ -252,9 +251,9 @@ float bme280_hum(I2C_HandleTypeDef *hi2c, uint16_t devAddress){
 	dig_h5 = (stored_humidity_address_read5[1] << 4) + stored_humidity_address_read5[0];
 	dig_h6 = stored_humidity_address_read6[0];
 
-	h = (((double)t_fine)-76800.0);
-	h = (adc_H-(((double)dig_h4)*64.0+((double)dig_h5) / 16384.0 * h))*(((double)dig_h2)/65536.0*(1.0 + ((double)dig_h6)/67108864.0*h*(1.0+((double)dig_h3)/67108864.0*h)));
-	h = h * (1.0-((double)dig_h1)*h/524288.0);
-	return h;
+	humidity = (((double)t_fine)-76800.0);
+	humidity = (adc_H-(((double)dig_h4)*64.0+((double)dig_h5) / 16384.0 * humidity))*(((double)dig_h2)/65536.0*(1.0 + ((double)dig_h6)/67108864.0*humidity*(1.0+((double)dig_h3)/67108864.0*humidity)));
+	humidity = humidity * (1.0-((double)dig_h1)*humidity/524288.0);
+	return humidity;
 
 }
